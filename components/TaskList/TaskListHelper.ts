@@ -1,47 +1,21 @@
+import { getListItem, Task } from '@/service';
+import { TaskStatus } from '@/types';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
-import React, { useCallback, useEffect, useState } from 'react';
-import {
-  SafeAreaView,
-  SectionList,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { useCallback, useEffect, useState } from 'react';
 
-import Header from '@/components/Header';
-import ItemCard from '@/components/IteamCard';
-import type { Task } from '@/service';
-import { getListItem } from '@/service';
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  listContainer: {
-    gap: 8,
-    paddingBottom: 30,
-  },
-  header: {
-    backgroundColor: '#f0f0f0',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-  },
-  headerText: {
-    fontWeight: '700',
-    fontSize: 16,
-  },
-});
-
-const Todo = () => {
+export const useTaskListHelper = (status: TaskStatus) => {
   const [tasks, setTasks] = useState<
     { date: string; title: string; data: Task[] }[]
   >([]);
+  const [deletedIds, setDeletedIds] = useState<Set<string>>(new Set());
+
+  // NOTE: Retreive the data from api
   const { data, isFetching, hasNextPage, fetchNextPage } = useInfiniteQuery({
-    queryKey: ['getTodoList'],
+    queryKey: [status],
     queryFn: ({ pageParam }) => {
       return getListItem({
-        status: 'TODO',
+        status,
         offset: pageParam,
         limit: 10,
         sortBy: 'createdAt',
@@ -66,7 +40,10 @@ const Todo = () => {
 
   useEffect(() => {
     if (data) {
-      const flatmap = data.pages.flatMap((p) => p.tasks);
+      let flatmap = data.pages.flatMap((p) => p.tasks);
+      if (deletedIds.size !== 0) {
+        flatmap = flatmap.filter((item) => !deletedIds.has(item.id));
+      }
       const reduce = flatmap.reduce(
         (
           group: { date: string; title: string; data: Task[] }[],
@@ -101,28 +78,27 @@ const Todo = () => {
     }
   }, [data]);
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <Header name="To-do" />
-      <View style={styles.container}>
-        <SectionList
-          contentContainerStyle={styles.listContainer}
-          keyExtractor={(item) => item.id}
-          onEndReached={onEndReached}
-          onEndReachedThreshold={0.5}
-          renderItem={({ item }) => {
-            return <ItemCard key={item.id} item={item} />;
-          }}
-          renderSectionHeader={({ section: { title } }) => (
-            <View style={styles.header}>
-              <Text style={styles.headerText}>{title}</Text>
-            </View>
-          )}
-          sections={tasks}
-        />
-      </View>
-    </SafeAreaView>
-  );
-};
+  const onDelete = (id: string) => {
+    setTasks((prev) =>
+      prev
+        .map((task) => ({
+          ...task,
+          data: task.data.filter((item) => item.id !== id),
+        }))
+        .filter((task) => task.data.length > 0)
+    );
 
-export default Todo;
+    const tempDeleteIds = new Set(deletedIds);
+    if (!tempDeleteIds.has(id)) {
+      tempDeleteIds.add(id);
+      setDeletedIds(tempDeleteIds);
+    }
+  };
+
+  return {
+    tasks,
+    onEndReached,
+    onDelete,
+    isLoading: isFetching,
+  };
+};

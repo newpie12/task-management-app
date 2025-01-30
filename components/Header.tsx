@@ -4,6 +4,17 @@ interface HeaderProps {
   name: string;
 }
 
+const Header = ({ name }: HeaderProps) => {
+  return (
+    <View style={styles.row}>
+      <Text style={styles.textStyle}>{name}</Text>
+      <View style={styles.divider} />
+    </View>
+  );
+};
+
+export default Header;
+
 const styles = StyleSheet.create({
   row: {
     paddingHorizontal: 20,
@@ -20,14 +31,3 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
 });
-
-const Header = ({ name }: HeaderProps) => {
-  return (
-    <View style={styles.row}>
-      <Text style={styles.textStyle}>{name}</Text>
-      <View style={styles.divider} />
-    </View>
-  );
-};
-
-export default Header;

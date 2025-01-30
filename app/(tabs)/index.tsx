@@ -1,15 +1,15 @@
 import { Stack } from 'expo-router';
 import React from 'react';
 
-import Main from '@/pages/Main';
+import Todo from '@/pages/Todo';
 
-const Todo = () => {
+const TodoPage = () => {
   return (
     <>
       <Stack.Screen options={{ title: 'Todo' }} />
-      <Main />
+      <Todo />
     </>
   );
 };
 
-export default Todo;
+export default TodoPage;
