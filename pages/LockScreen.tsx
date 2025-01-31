@@ -52,7 +52,6 @@ const LockScreen = () => {
     setWrongPassCode(false);
   };
 
-  useEffect(() => {}, []);
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ alignItems: 'center', gap: 8 }}>
