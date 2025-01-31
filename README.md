@@ -12,23 +12,18 @@ Task management application is a application for check the tasks from api that d
 
 2.  Start the app
 
-         To run the app in Expo Dev Client
-
-    ```bash
-     yarn start
-    ```
-
-        To run the app in iOS simulator
-
-    ```bash
-     yarn ios
-    ```
-
-        To run the app in Android emulator
-
-    ```bash
-     yarn anroid
-    ```
+- To run the app in Expo Dev Client
+   ```bash
+    yarn start
+   ```
+- To run the app in iOS simulator
+   ```bash
+    yarn ios
+   ```
+- To run the app in Android emulator
+   ```bash
+    yarn anroid
+   ```
 
     In the output, you'll find options to open the app in a
 
