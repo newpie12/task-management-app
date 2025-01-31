@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "task-manage-app",
-    "slug": "task-manage-app",
+    "name": "Task management",
+    "slug": "task-management-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
